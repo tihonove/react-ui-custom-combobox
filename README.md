@@ -1,4 +1,4 @@
-# Demo from combobox customization
+# Combobox customization demo
 
 ## Build demo
 
