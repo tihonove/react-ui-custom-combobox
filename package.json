@@ -2,6 +2,7 @@
   "name": "react-ui-custom-combobox-demo",
   "version": "1.0.0",
   "scripts": {
+    "build": "cross-env NODE_ENV=production webpack -p",
     "start": "webpack-dev-server -d --history-api-fallback --hot --inline"
   },
   "description": "Demo for custom combobox",

@@ -71,5 +71,13 @@ function createConfig(publicPath, output) {
         ],
     };
 }
+if (process.env.NODE_ENV === 'production') {
+    module.exports = [
+        createConfig('http://tech.skbkontur.ru/react-ui-validations/', path.join(__dirname, 'dist')),
+    ];
+}
+else {
+    module.exports = createConfig('/', path.join(__dirname, 'dist'));
+}
 
-module.exports = createConfig('/', path.join(__dirname, 'dist'));
+
