@@ -10,7 +10,7 @@ npm start
 
 ```
 
-## [Live demo](https://tihonove.github.io/react-ui-custom-combobox/)
+## [Live demo](https://tihonove.github.io/react-ui-custom-combobox-demo/)
 
 ## Файлы:
 
