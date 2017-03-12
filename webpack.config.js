@@ -73,7 +73,7 @@ function createConfig(publicPath, output) {
 }
 if (process.env.NODE_ENV === 'production') {
     module.exports = [
-        createConfig('http://tech.skbkontur.ru/react-ui-validations/', path.join(__dirname, 'dist')),
+        createConfig('https://tihonove.github.io/react-ui-custom-combobox/', path.join(__dirname, 'dist')),
     ];
 }
 else {
