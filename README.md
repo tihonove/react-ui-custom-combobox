@@ -1,12 +1,13 @@
 # Demo from combobox customization
 
-## See demo
+## Build demo
 
 ```
 git clone git@github.com:tihonove/react-ui-custom-combobox.git
 cd react-ui-custom-combobox
 npm install
 npm start
+
 ```
 
 ## [Live demo](https://tihonove.github.io/react-ui-custom-combobox/)
