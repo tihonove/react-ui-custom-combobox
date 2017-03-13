@@ -5,7 +5,7 @@ import { Menu, Loader } from './Elements/Menu';
 import { renderItemsMenu, inputLikeBlock, inputLikeLoadingBlock, input } from './Elements';
 import { bindActionsToDispatch, processCancelableActions, cancelable, cancelAll } from './ActionUtils';
 
-const ComboboxActions = {
+export const ComboboxActions = {
     focus: () => ({ type: 'Focus' }),
     changeSelectedItem: item => ({ type: 'SelectItem', item: item }),
     selectItemFromMenu: item => ({ type: 'ChangeValue', item: item }),
@@ -43,8 +43,14 @@ export default function createComboBoxManager(initialProps, dispatch) {
         if (action.type === 'ReceiveProps') {
             if (action.nextProps.value !== props.value) {
                 let currentItem;
-                if (state.items) {
-                    currentItem = state.items.find(x => props.itemToValue(x) === action.nextProps.value);
+                if (action.nextProps.value !== null) {
+                    if (state.items) {
+                        currentItem = state.items.find(x => props.itemToValue(x) === action.nextProps.value);
+                    }
+                    if (!currentItem) {
+                        Actions.updateCurrentItemByValue(action.nextProps.value);
+                        return state.merge({ editorContent: inputLikeLoadingBlock(Actions.focus) });
+                    }
                 }
                 return state.merge({
                     currentItem: currentItem,
@@ -61,6 +67,14 @@ export default function createComboBoxManager(initialProps, dispatch) {
         }
         if (action.type === 'FocusOutside') {
             if (state.focused) {
+                if (state.initialInputValue !== state.inputValue) {
+                    if (state.items && state.items.length === 1) {
+                        dispatch(() => props.onChange(props.itemToValue(state.items[0])));
+                    }
+                    else {
+                        dispatch(() => props.onChange(null));
+                    }
+                }
                 return cancelAll(state).merge({
                     focused: false,
                     editorContent: inputLikeBlock(state.currentItem ? props.itemToString(state.currentItem) : '', Actions.focus),
@@ -71,14 +85,18 @@ export default function createComboBoxManager(initialProps, dispatch) {
         if (action.type === 'InputChange') {
             Actions.updateItems(action.value);
             return state.merge({
+                inputValue: action.value,
                 editorContent: input(action.value, Actions.inputChange, Actions.keyPress),
             });
         }
         if (action.type === 'Focus') {
             Actions.updateItems('');
+            const intpuValue = state.currentItem ? props.itemToString(state.currentItem) : '';
             return state.merge({
                 focused: true,
-                editorContent: input(state.currentItem ? props.itemToString(state.currentItem) : '', Actions.inputChange, Actions.keyPress),
+                inputValue: intpuValue,
+                initialInputValue: intpuValue,
+                editorContent: input(intpuValue, Actions.inputChange, Actions.keyPress),
             });
         }
         if (action.type === 'EndReceiveItems') {
@@ -89,7 +107,7 @@ export default function createComboBoxManager(initialProps, dispatch) {
             });
         }
         if (action.type === 'KeyPress' && state.items && action.key === 'Enter') {
-            dispatch(() => props.onChange(state.items[state.selectedIndex].id));
+            dispatch(() => props.onChange(props.itemToValue(state.items[state.selectedIndex])));
             return state.merge({
                 focused: false,
                 dropdownContent: null,
@@ -109,7 +127,7 @@ export default function createComboBoxManager(initialProps, dispatch) {
             return state.merge({ dropdownContent: null });
         }
         if (action.type === 'ChangeValue') {
-            dispatch(() => props.onChange(action.item.id));
+            dispatch(() => props.onChange(props.itemToValue(action.item)));
             return state.merge({
                 focused: false,
                 dropdownContent: null,
