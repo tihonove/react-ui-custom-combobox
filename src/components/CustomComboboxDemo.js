@@ -33,9 +33,10 @@ async function findItems(query: string): Promise<Item[]> {
     return items.filter(x => x.name.includes(query));
 }
 
+let count = 1;
 async function findItemsWithErrors(query: string): Promise<Item[]> {
     await delay(1000);
-    if (query.includes('e')) {
+    if (query.includes('e') && (count++ % 2) !== 0) {
         throw new Error();
     }
     return items.filter(x => x.name.includes(query));
@@ -184,6 +185,7 @@ export default class CustomComboboxDemo extends React.Component {
                 </Button>
 
                 <h4>Кастомная обработка ошибок</h4>
+                <Code>Ошибка будет получена, если (query.includes('e') && (count++ % 2) !== 0)</Code>
                 <CustomCombobox
                     findItems={findItemsWithErrors}
                     itemToValue={x => x.id}
